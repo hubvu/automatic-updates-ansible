@@ -1,0 +1,7 @@
+---
+# Import playbooks that you want to deploy in one go.
+# PS: the order of the playbooks being executed matters.
+- import_playbook: centos_automatic_updates.yaml
+- import_playbook: debian_automatic_updates.yaml
+#- import_playbook: centos_automatic_updates_remove.yaml
+#- import_playbook: debian_automatic_updates_remove.yaml
