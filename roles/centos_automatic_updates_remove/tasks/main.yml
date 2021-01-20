@@ -1,2 +1,34 @@
 ---
 # tasks file for centos_automatic_updates_remove
+
+# ===
+#
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/dnf_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/systemd_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/file_module.html
+#
+# https://dnf.readthedocs.io/en/latest/automatic.html
+#
+# ===
+
+- name: ensure that the unattended-upgrades.service is stopped and disabled
+  systemd:
+    name: dnf-automatic.timer
+    state: stopped
+    enabled: no
+
+- name: ensure that the dnf-automatic package is removed
+  dnf:
+    name:
+      - dnf-automatic
+    state: absent
+    autoremove: yes
+
+- name: just force systemd to reread configs (2.4 and above)
+  systemd:
+    daemon_reload: yes
+
+- name: remove (delete) the "automatic.conf" file, if available
+  file:
+    path: /etc/dnf/automatic.conf
+    state: absent
