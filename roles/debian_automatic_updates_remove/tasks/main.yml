@@ -1,2 +1,45 @@
 ---
 # tasks file for debian_automatic_updates_remove
+
+# ===
+#
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/systemd_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/file_module.html
+#
+# https://wiki.debian.org/UnattendedUpgrades
+#
+# ===
+
+- name: ensure that the unattended-upgrades.service is stopped and disabled
+  systemd:
+    name: unattended-upgrades.service
+    state: stopped
+    enabled: no
+
+- name: ensure that the unattended-upgrades and apt-listchanges packages are removed
+  apt:
+    name:
+      - unattended-upgrades
+      - apt-listchanges
+    state: absent
+    autoremove: yes
+
+- name: just force systemd to reread configs (2.4 and above)
+  systemd:
+    daemon_reload: yes
+
+- name: remove (delete) the "listchanges.conf" file, if available
+  file:
+    path: /etc/apt/listchanges.conf
+    state: absent
+
+- name: remove (delete) the "50unattended-upgrades" file, if available
+  file:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    state: absent
+
+- name: remove (delete) the "20auto-upgrades" file, if available
+  file:
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    state: absent
