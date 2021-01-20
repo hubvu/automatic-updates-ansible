@@ -1,2 +1,40 @@
 ---
 # tasks file for centos_automatic_updates
+
+# ===
+#
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/dnf_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/systemd_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html
+#
+# https://dnf.readthedocs.io/en/latest/automatic.html
+#
+# ===
+
+- name: ensure that the dnf-automatic package is installed
+  dnf:
+    name:
+      - dnf-automatic
+    state: present
+
+- name:  ensure that "dnf-automatic.timer" is enabled, running and ensure it is not masked
+  systemd:
+    name: dnf-automatic.timer
+    state: started
+    enabled: yes
+    masked: no
+
+- name: copy a custom "automatic.conf" file into place, backing up the original if it differs from the copied version
+  copy:
+    src: dnf-automatic/automatic.conf
+    dest: /etc/dnf/automatic.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: restart "dnf-automatic.timer", in all cases, also issue daemon-reload to pick up configuration changes
+  systemd:
+    name: dnf-automatic.timer
+    state: restarted
+    daemon_reload: yes
