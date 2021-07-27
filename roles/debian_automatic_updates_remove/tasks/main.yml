@@ -11,13 +11,13 @@
 #
 # ===
 
-- name: ensure that the unattended-upgrades.service is stopped and disabled
+- name: ensure that the "unattended-upgrades.service" is stopped and disabled
   systemd:
     name: unattended-upgrades.service
     state: stopped
     enabled: no
 
-- name: ensure that the unattended-upgrades and apt-listchanges packages are removed
+- name: ensure that the "unattended-upgrades" and "apt-listchanges" packages are removed
   apt:
     name:
       - unattended-upgrades
