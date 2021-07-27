@@ -6,12 +6,13 @@
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/systemd_module.html
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/fetch_module.html
 #
 # https://wiki.debian.org/UnattendedUpgrades
 #
 # ===
 
-- name: ensure that the unattended-upgrades and apt-listchanges packages are installed
+- name: ensure that the "unattended-upgrades" and "apt-listchanges" packages are installed
   apt:
     name:
       - unattended-upgrades
@@ -19,12 +20,20 @@
     state: present
     install_recommends: no
 
-- name: ensure that service "unattended-upgrades.service" is enabled, running and ensure it is not masked
+- name: ensure that service "unattended-upgrades.service" is enabled, running and it is not masked
   systemd:
     name: unattended-upgrades.service
     state: started
     enabled: yes
     masked: no
+
+- name: Fetch "/etc/apt/listchanges.conf" and store the configuration file in a "backups" directory under the "files" directory
+  fetch:
+    src: /etc/apt/listchanges.conf
+    dest: roles/debian_automatic_updates/files/backups/{{ inventory_hostname }}/{{ ansible_facts['date_time']['iso8601'] }}-{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}/
+    flat: yes
+    validate_checksum: yes
+    fail_on_missing: no
 
 - name: copy a custom "listchanges.conf" file into place, backing up the original if it differs from the copied version
   copy:
@@ -32,8 +41,16 @@
     dest: /etc/apt/listchanges.conf
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
     backup: yes
+
+- name: Fetch "/etc/apt/apt.conf.d/50unattended-upgrades" and store the configuration file in a "backups" directory under the "files" directory
+  fetch:
+    src: /etc/apt/apt.conf.d/50unattended-upgrades
+    dest: roles/debian_automatic_updates/files/backups/{{ inventory_hostname }}/{{ ansible_facts['date_time']['iso8601'] }}-{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}/
+    flat: yes
+    validate_checksum: yes
+    fail_on_missing: no
 
 - name: copy a custom "50unattended-upgrades" file into place, backing up the original if it differs from the copied version
   copy:
@@ -41,8 +58,16 @@
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
     backup: yes
+
+- name: Fetch "/etc/apt/apt.conf.d/20auto-upgrades" and store the configuration file in a "backups" directory under the "files" directory
+  fetch:
+    src: /etc/apt/apt.conf.d/20auto-upgrades
+    dest: roles/debian_automatic_updates/files/backups/{{ inventory_hostname }}/{{ ansible_facts['date_time']['iso8601'] }}-{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}/
+    flat: yes
+    validate_checksum: yes
+    fail_on_missing: no
 
 - name: copy a custom "20auto-upgrades" file into place, backing up the original if it differs from the copied version
   copy:
@@ -50,7 +75,7 @@
     dest: /etc/apt/apt.conf.d/20auto-upgrades
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
     backup: yes
 
 - name: restart the "unattended-upgrades.service", in all cases, also issue daemon-reload to pick up configuration changes
