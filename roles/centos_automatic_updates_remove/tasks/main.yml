@@ -11,13 +11,13 @@
 #
 # ===
 
-- name: ensure that the unattended-upgrades.service is stopped and disabled
+- name: ensure that the "unattended-upgrades.service" is stopped and disabled
   systemd:
     name: dnf-automatic.timer
     state: stopped
     enabled: no
 
-- name: ensure that the dnf-automatic package is removed
+- name: ensure that the "dnf-automatic" package is removed
   dnf:
     name:
       - dnf-automatic
