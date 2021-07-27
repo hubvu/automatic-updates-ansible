@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/hubvu/automatic-updates-ansible/actions" alt="Ansible Lint">
-    <img src="https://github.com/hubvu/automatic-updates-ansible/actions/workflows/ansible-lint.yml/badge.svg?branch=main">
+    <img src="https://github.com/hubvu/automatic-updates-ansible/actions/workflows/ansible-lint.yml/badge.svg?branch=master">
   </a>
   <a href="https://github.com/hubvu/automatic-updates-ansible/releases" alt="GitHub Release">
     <img src="https://img.shields.io/github/v/release/hubvu/automatic-updates-ansible.svg">
@@ -34,7 +34,7 @@
 ### What is this?
 
 * A set of Ansible roles for CentOS and Debian hosts that provides users with the option to enable and/or remove automatic updates for packages installed.
-  * **Deploy** - [`centos_automatic_updates.yaml`](./centos_automatic_updates.yaml) and [`debian_automatic_updates.yaml`](./debian_automatic_updates.yaml) playbooks will install packages for automatic updates. Custom configuration files to set automatic updates will then be copied to the remote hosts. If there are any existing configuration files, a task will fetch the files and store them in a `backups` directory under the `files` directory.
+  * **Deploy** - [`centos_automatic_updates.yaml`](./centos_automatic_updates.yaml) and [`debian_automatic_updates.yaml`](./debian_automatic_updates.yaml) playbooks will install packages that enable automatic updates. Custom configuration files to set automatic updates will then be copied to the remote hosts. If there are any existing configuration files, a task will fetch the files and store them in a `backups` directory under the `files` directory.
   * **Remove** - [`centos_automatic_updates_remove.yaml`](./centos_automatic_updates_remove.yaml) and [`debian_automatic_updates_remove.yaml`](./debian_automatic_updates_remove.yaml) will remove packages and configuration files from the hosts that enable automatic updates.
 * For reference, below is a demonstration of how the directory structure of `backups` will look like after a number of `debian_automatic_updates.yaml` and `centos_automatic_updates.yaml` playbook runs at different time intervals.
 
